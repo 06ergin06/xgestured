@@ -1,15 +1,5 @@
-#include <fcntl.h>
-#include <libinput.h>
-#include <libudev.h>
-#include <stdio.h>
-#include <unistd.h>
+#include "header.h"
 
-double	ft_fabs(double x)
-{
-	if (x < 0)
-		x = -x;
-	return (x);
-}
 int	open_restricted(const char *path, int flags, void *user_data)
 {
 	int	fd;
@@ -87,7 +77,7 @@ int	main(void)
 				gesture_event = libinput_event_get_gesture_event(event);
 				finger_count = libinput_event_gesture_get_finger_count(gesture_event);
 				printf("finger count : %d \n", finger_count);
-				printf("total_dx: %.2f\n total_dy: %.2f\n", total_dx, total_dy);
+				printf("total_dx: %.2f\ntotal_dy: %.2f\n", total_dx, total_dy);
 				if (ft_fabs(total_dy) > ft_fabs(total_dx))
 				{
 					if (total_dy < 0)
