@@ -1,9 +1,15 @@
 #include <fcntl.h>
 #include <libinput.h>
-#include <math.h>
+#include <libudev.h>
 #include <stdio.h>
 #include <unistd.h>
 
+double	ft_fabs(double x)
+{
+	if (x < 0)
+		x = -x;
+	return (x);
+}
 int	open_restricted(const char *path, int flags, void *user_data)
 {
 	int	fd;
@@ -30,29 +36,34 @@ int	main(void)
 {
 	struct libinput					*li;
 	struct libinput_event			*event;
-	const char						*touchpad_path = "/dev/input/event10";
 	enum libinput_event_type		type;
 	struct libinput_event_gesture	*gesture_event;
 	int								finger_count;
 	double							total_dx;
 	double							total_dy;
+	struct udev						*udev;
 
-	total_dx = 0.0;
-	total_dy = 0.0;
-	li = libinput_path_create_context(&interface, NULL);
+	udev = udev_new();
+	if (!udev)
+	{
+		fprintf(stderr, "error : cannot create udev\n");
+		return (1);
+	}
+	li = libinput_udev_create_context(&interface, NULL, udev);
 	if (!li)
 	{
 		fprintf(stderr, "error : libinput cannot create context \n");
 		return (1);
 	}
 	printf("sucess : libinput create context \n");
-	if (!libinput_path_add_device(li, touchpad_path))
+	if (libinput_udev_assign_seat(li, "seat0") != 0)
 	{
-		fprintf(stderr, "cannot add device : %s \n", touchpad_path);
+		fprintf(stderr, "cannot assign seat 'seat0'\n");
 		libinput_unref(li);
+		udev_unref(udev);
 		return (1);
 	}
-	printf("sucess : added a %s device \n", touchpad_path);
+	printf("sucess : added a touchpad \n");
 	while (1)
 	{
 		libinput_dispatch(li);
@@ -77,7 +88,7 @@ int	main(void)
 				finger_count = libinput_event_gesture_get_finger_count(gesture_event);
 				printf("finger count : %d \n", finger_count);
 				printf("total_dx: %.2f\n total_dy: %.2f\n", total_dx, total_dy);
-				if (fabs(total_dy) > fabs(total_dx))
+				if (ft_fabs(total_dy) > ft_fabs(total_dx))
 				{
 					if (total_dy < 0)
 					{
@@ -112,5 +123,6 @@ int	main(void)
 		}
 	}
 	libinput_unref(li);
+	udev_unref(udev);
 	return (0);
 }
