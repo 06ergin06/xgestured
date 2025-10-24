@@ -34,9 +34,11 @@ int	main(void)
 	enum libinput_event_type		type;
 	struct libinput_event_gesture	*gesture_event;
 	int								finger_count;
-	double							dy;
-	double							dx;
+	double							total_dx;
+	double							total_dy;
 
+	total_dx = 0.0;
+	total_dy = 0.0;
 	li = libinput_path_create_context(&interface, NULL);
 	if (!li)
 	{
@@ -61,20 +63,23 @@ int	main(void)
 			{
 			case LIBINPUT_EVENT_GESTURE_SWIPE_BEGIN:
 				printf("start a gesture \n");
+				total_dx = 0.0;
+				total_dy = 0.0;
 				break ;
 			case LIBINPUT_EVENT_GESTURE_SWIPE_UPDATE:
+				gesture_event = libinput_event_get_gesture_event(event);
+				total_dx += libinput_event_gesture_get_dx(gesture_event);
+				total_dy += libinput_event_gesture_get_dy(gesture_event);
 				break ;
 			case LIBINPUT_EVENT_GESTURE_SWIPE_END:
 				printf("end a gesture \n");
 				gesture_event = libinput_event_get_gesture_event(event);
 				finger_count = libinput_event_gesture_get_finger_count(gesture_event);
 				printf("finger count : %d \n", finger_count);
-				dy = libinput_event_gesture_get_dy(gesture_event);
-				dx = libinput_event_gesture_get_dx(gesture_event);
-				printf("dx : %f\n dy : %f\n", dx, dy);
-				if (fabs(dy) > fabs(dx))
+				printf("total_dx: %.2f\n total_dy: %.2f\n", total_dx, total_dy);
+				if (fabs(total_dy) > fabs(total_dx))
 				{
-					if (dy < 0)
+					if (total_dy < 0)
 					{
 						printf("fingers up \n");
 					}
@@ -85,7 +90,7 @@ int	main(void)
 				}
 				else
 				{
-					if (dx < 0)
+					if (total_dx < 0)
 					{
 						printf("fingers left \n");
 					}
