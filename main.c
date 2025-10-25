@@ -1,8 +1,8 @@
 #include "header.h"
 
-int	open_restricted(const char *path, int flags, void *user_data)
+int open_restricted(const char *path, int flags, void *user_data)
 {
-	int	fd;
+	int fd;
 
 	fd = open(path, flags);
 	if (fd < 0)
@@ -12,27 +12,31 @@ int	open_restricted(const char *path, int flags, void *user_data)
 	return (fd);
 }
 
-void	close_restricted(int fd, void *user_data)
+void close_restricted(int fd, void *user_data)
 {
 	close(fd);
 }
 
-struct libinput_interface	interface = {
+struct libinput_interface interface = {
 	.open_restricted = open_restricted,
 	.close_restricted = close_restricted,
 };
 
-int	main(void)
+int main(void)
 {
-	struct libinput					*li;
-	struct libinput_event			*event;
-	enum libinput_event_type		type;
-	struct libinput_event_gesture	*gesture_event;
-	int								finger_count;
-	double							total_dx;
-	double							total_dy;
-	struct udev						*udev;
+	struct libinput *li;
+	struct libinput_event *event;
+	enum libinput_event_type type;
+	struct libinput_event_gesture *gesture_event;
+	int finger_count;
+	double total_dx;
+	double total_dy;
+	struct udev *udev;
+	struct s_config config = {0};
+	char config_path[256];
 
+	// snprintf(config_path, sizeof(config_path), "%s/.config/jestapp/config.ini", getenv("HOME"));
+	snprintf(config_path, sizeof(config_path), "config.ini");
 	udev = udev_new();
 	if (!udev)
 	{
@@ -40,6 +44,15 @@ int	main(void)
 		return (1);
 	}
 	li = libinput_udev_create_context(&interface, NULL, udev);
+
+	if (ini_parse(config_path, config_handler, &config) < 0)
+	{
+		fprintf(stderr, "Cannot read config file \n");
+	}
+	else
+	{
+		printf("sucess : readed config file");
+	}
 	if (!li)
 	{
 		fprintf(stderr, "error : libinput cannot create context \n");
@@ -66,12 +79,12 @@ int	main(void)
 				printf("start a gesture \n");
 				total_dx = 0.0;
 				total_dy = 0.0;
-				break ;
+				break;
 			case LIBINPUT_EVENT_GESTURE_SWIPE_UPDATE:
 				gesture_event = libinput_event_get_gesture_event(event);
 				total_dx += libinput_event_gesture_get_dx(gesture_event);
 				total_dy += libinput_event_gesture_get_dy(gesture_event);
-				break ;
+				break;
 			case LIBINPUT_EVENT_GESTURE_SWIPE_END:
 				gesture_event = libinput_event_get_gesture_event(event);
 				finger_count = libinput_event_gesture_get_finger_count(gesture_event);
@@ -82,14 +95,12 @@ int	main(void)
 					if (total_dy < 0)
 					{
 						printf("fingers up \n");
-						if(finger_count == 3)
-							system("gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval 'Main.overview.toggle();'");
+						system(config.swipe_up_3);
 					}
 					else
 					{
 						printf("fingers down \n");
-						if(finger_count == 3)
-							system("gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval 'Main.shellDBusService.ShowApplications();'");
+						system(config.swipe_down_3);
 					}
 				}
 				else
@@ -97,29 +108,31 @@ int	main(void)
 					if (total_dx < 0)
 					{
 						printf("fingers left \n");
-						if(finger_count == 3)
-							system("gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval 'let w = global.workspace_manager; w.activate_workspace(w.get_active_workspace_index() - 1);'");
+						system(config.swipe_left_3);
 					}
 					else
 					{
 						printf("fingers right \n");
-						if(finger_count == 3)
-							system("gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval 'let w = global.workspace_manager; w.activate_workspace(w.get_active_workspace_index() + 1);'");
+						system(config.swipe_right_3);
 					}
 				}
 				printf("end a gesture \n");
-				break ;
+				break;
 			case LIBINPUT_EVENT_GESTURE_PINCH_BEGIN:
 				printf("start a pinch \n");
-				break ;
+				break;
 			case LIBINPUT_EVENT_GESTURE_PINCH_END:
 				printf("end a pinch \n");
 			default:
-				break ;
+				break;
 			}
 			libinput_event_destroy(event);
 		}
 	}
+	free(config.swipe_up_3);
+	free(config.swipe_down_3);
+	free(config.swipe_right_3);
+	free(config.swipe_left_3);
 	libinput_unref(li);
 	udev_unref(udev);
 	return (0);

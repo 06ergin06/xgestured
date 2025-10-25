@@ -6,13 +6,13 @@ LDFLAGS = -linput -ludev
 NAME = jestapp
 
 # Source files
-SRCS = utils.c main.c
+SRCS = utils.c main.c ini.c
 
 # Object files
 OBJS = $(SRCS:.c=.o)
 
 # Header files
-HEADERS = header.h
+HEADERS = header.h ini.h
 
 # Default target
 all: $(NAME)
