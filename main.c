@@ -73,7 +73,6 @@ int	main(void)
 				total_dy += libinput_event_gesture_get_dy(gesture_event);
 				break ;
 			case LIBINPUT_EVENT_GESTURE_SWIPE_END:
-				printf("end a gesture \n");
 				gesture_event = libinput_event_get_gesture_event(event);
 				finger_count = libinput_event_gesture_get_finger_count(gesture_event);
 				printf("finger count : %d \n", finger_count);
@@ -83,10 +82,14 @@ int	main(void)
 					if (total_dy < 0)
 					{
 						printf("fingers up \n");
+						if(finger_count == 3)
+							system("gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval 'Main.overview.toggle();'");
 					}
 					else
 					{
 						printf("fingers down \n");
+						if(finger_count == 3)
+							system("gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval 'Main.shellDBusService.ShowApplications();'");
 					}
 				}
 				else
@@ -94,12 +97,17 @@ int	main(void)
 					if (total_dx < 0)
 					{
 						printf("fingers left \n");
+						if(finger_count == 3)
+							system("gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval 'let w = global.workspace_manager; w.activate_workspace(w.get_active_workspace_index() - 1);'");
 					}
 					else
 					{
 						printf("fingers right \n");
+						if(finger_count == 3)
+							system("gdbus call --session --dest org.gnome.Shell --object-path /org/gnome/Shell --method org.gnome.Shell.Eval 'let w = global.workspace_manager; w.activate_workspace(w.get_active_workspace_index() + 1);'");
 					}
 				}
+				printf("end a gesture \n");
 				break ;
 			case LIBINPUT_EVENT_GESTURE_PINCH_BEGIN:
 				printf("start a pinch \n");
