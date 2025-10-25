@@ -39,7 +39,7 @@ re: fclean all
 # Install dependencies (Ubuntu/Debian)
 install-deps:
 	sudo apt-get update
-	sudo apt-get install libinput-dev libudev-dev
+	sudo apt-get install wmctrl xdotool libinput-tools libinput-dev libudev-dev
 
 # Run with sudo (required for input device access)
 run: $(NAME)
