@@ -11,7 +11,7 @@ int config_handler(void *user_data, const char *section, const char *name, const
 {
 	struct s_config *config = (struct s_config *)user_data;
 
-	if (strcmp(section, "gestures") == 0)
+	if (strcmp(section, "gestures_3") == 0)
 	{
 		if (strcmp(name, "swipe_up_3") == 0)
 		{
@@ -28,6 +28,25 @@ int config_handler(void *user_data, const char *section, const char *name, const
 		else if (strcmp(name, "swipe_right_3") == 0)
 		{
 			config->swipe_right_3 = strdup(value);
+		}
+	}
+	else if (strcmp(section, "gestures_4") == 0)
+	{
+		if (strcmp(name, "swipe_up_4") == 0)
+		{
+			config->swipe_up_4 = strdup(value);
+		}
+		else if (strcmp(name, "swipe_down_4") == 0)
+		{
+			config->swipe_down_4 = strdup(value);
+		}
+		else if (strcmp(name, "swipe_left_4") == 0)
+		{
+			config->swipe_left_4 = strdup(value);
+		}
+		else if (strcmp(name, "swipe_right_4") == 0)
+		{
+			config->swipe_right_4 = strdup(value);
 		}
 	}
 

@@ -95,12 +95,18 @@ int main(void)
 					if (total_dy < 0)
 					{
 						printf("fingers up \n");
-						system(config.swipe_up_3);
+						if (finger_count == 3)
+							system(config.swipe_up_3);
+						else if (finger_count == 4)
+							system(config.swipe_up_4);
 					}
 					else
 					{
 						printf("fingers down \n");
-						system(config.swipe_down_3);
+						if (finger_count == 3)
+							system(config.swipe_down_3);
+						else if (finger_count == 4)
+							system(config.swipe_down_4);
 					}
 				}
 				else
@@ -108,12 +114,18 @@ int main(void)
 					if (total_dx < 0)
 					{
 						printf("fingers left \n");
-						system(config.swipe_left_3);
+						if (finger_count == 3)
+							system(config.swipe_left_3);
+						else if (finger_count == 4)
+							system(config.swipe_left_4);
 					}
 					else
 					{
 						printf("fingers right \n");
-						system(config.swipe_right_3);
+						if (finger_count == 3)
+							system(config.swipe_right_3);
+						else if (finger_count == 4)
+							system(config.swipe_right_4);
 					}
 				}
 				printf("end a gesture \n");
