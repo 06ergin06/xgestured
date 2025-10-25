@@ -6,7 +6,25 @@ double ft_fabs(double x)
 		x = -x;
 	return (x);
 }
+void run_command(char *command)
+{
+	if(!command || command[0] == '\0')
+		fprintf(stderr,"command not found\n");
 
+	pid_t pid = fork();
+
+	if(pid == -1)
+	{
+		fprintf(stderr, "cannot fork\n");
+		return ;
+	}
+	if(pid == 0)
+	{
+		execl("/bin/sh", "sh", "-c", command, (char*) NULL);
+		fprintf(stderr,"cannot run command\n");
+		exit(1);
+	}
+}
 int config_handler(void *user_data, const char *section, const char *name, const char *value)
 {
 	struct s_config *config = (struct s_config *)user_data;

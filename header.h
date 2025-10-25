@@ -17,6 +17,6 @@ struct s_config
     char *swipe_left_4;
     char *swipe_right_4;
 };
-
+void run_command(char *command);
 int config_handler(void *user_data, const char *section, const char *name, const char *value);
 double ft_fabs(double x);

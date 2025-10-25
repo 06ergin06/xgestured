@@ -58,7 +58,10 @@ int main(void)
 		fprintf(stderr, "error : libinput cannot create context \n");
 		return (1);
 	}
-	printf("sucess : libinput create context \n");
+	else
+	{
+		printf("sucess : libinput create context \n");
+	}
 	if (libinput_udev_assign_seat(li, "seat0") != 0)
 	{
 		fprintf(stderr, "cannot assign seat 'seat0'\n");
@@ -96,17 +99,17 @@ int main(void)
 					{
 						printf("fingers up \n");
 						if (finger_count == 3)
-							system(config.swipe_up_3);
+							run_command(config.swipe_up_3);
 						else if (finger_count == 4)
-							system(config.swipe_up_4);
+							run_command(config.swipe_up_4);
 					}
 					else
 					{
 						printf("fingers down \n");
 						if (finger_count == 3)
-							system(config.swipe_down_3);
+							run_command(config.swipe_down_3);
 						else if (finger_count == 4)
-							system(config.swipe_down_4);
+							run_command(config.swipe_down_4);
 					}
 				}
 				else
@@ -115,17 +118,17 @@ int main(void)
 					{
 						printf("fingers left \n");
 						if (finger_count == 3)
-							system(config.swipe_left_3);
+							run_command(config.swipe_left_3);
 						else if (finger_count == 4)
-							system(config.swipe_left_4);
+							run_command(config.swipe_left_4);
 					}
 					else
 					{
 						printf("fingers right \n");
 						if (finger_count == 3)
-							system(config.swipe_right_3);
+							run_command(config.swipe_right_3);
 						else if (finger_count == 4)
-							system(config.swipe_right_4);
+							run_command(config.swipe_right_4);
 					}
 				}
 				printf("end a gesture \n");
@@ -145,6 +148,10 @@ int main(void)
 	free(config.swipe_down_3);
 	free(config.swipe_right_3);
 	free(config.swipe_left_3);
+	free(config.swipe_up_4);
+	free(config.swipe_down_4);
+	free(config.swipe_right_4);
+	free(config.swipe_left_4);
 	libinput_unref(li);
 	udev_unref(udev);
 	return (0);
