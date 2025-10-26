@@ -1,5 +1,6 @@
 #include "header.h"
 
+volatile sig_atomic_t reload_requested = 0;
 
 int open_restricted(const char *path, int flags, void *user_data)
 {
@@ -26,12 +27,52 @@ struct udev *udev_create()
 	if (!udev)
 	{
 		fprintf(stderr, "error : cannot create udev\n");
-		exit (1);
+		exit(1);
 	}
 	return udev;
 }
 
+int load_config(struct s_config *config)
+{
+	char config_path[256];
+	free(config->swipe_up_3);
+	config->swipe_up_3 = NULL;
+	free(config->swipe_down_3);
+	config->swipe_down_3 = NULL;
+	free(config->swipe_left_3);
+	config->swipe_left_3 = NULL;
+	free(config->swipe_right_3);
+	config->swipe_right_3 = NULL;
+	free(config->swipe_up_4);
+	config->swipe_up_4 = NULL;
+	free(config->swipe_down_4);
+	config->swipe_down_4 = NULL;
+	free(config->swipe_left_4);
+	config->swipe_left_4 = NULL;
+	free(config->swipe_right_4);
+	config->swipe_right_4 = NULL;
 
+	// snprintf(config_path, sizeof(config_path), "%s/.config/jestapp/config.ini", getenv("HOME"));
+	snprintf(config_path, sizeof(config_path), "config.ini");
+
+	if (ini_parse(config_path, config_handler, config) < 0)
+	{
+		fprintf(stderr, "Cannot read config file \n");
+		exit (1);
+	}
+	else
+	{
+		printf("sucess : readed config file \n");
+		return 0;
+	}
+}
+void handle_signal(int signum)
+{
+	if (signum == SIGHUP)
+	{
+		reload_requested = 1;
+	}
+}
 double ft_fabs(double x)
 {
 	if (x < 0)
@@ -40,22 +81,22 @@ double ft_fabs(double x)
 }
 void run_command(char *command)
 {
-	if(!command || command[0] == '\0')
+	if (!command || command[0] == '\0')
 	{
-		fprintf(stderr,"command not found\n");
-		return ;
+		fprintf(stderr, "command not found\n");
+		return;
 	}
 	pid_t pid = fork();
 
-	if(pid == -1)
+	if (pid == -1)
 	{
 		fprintf(stderr, "cannot fork\n");
-		return ;
+		return;
 	}
-	if(pid == 0)
+	if (pid == 0)
 	{
-		execl("/bin/sh", "sh", "-c", command, (char*) NULL);
-		fprintf(stderr,"cannot run command\n");
+		execl("/bin/sh", "sh", "-c", command, (char *)NULL);
+		fprintf(stderr, "cannot run command\n");
 		exit(1);
 	}
 }

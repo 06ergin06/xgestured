@@ -10,28 +10,26 @@ int main(void)
 	double total_dx = 0.0;
 	double total_dy = 0.0;
 	struct s_config config = {0};
-	char config_path[256];
 	struct pollfd fds;
 	int libinput_fd;
 	struct udev *udev;
+	struct sigaction sa;
+	sa.sa_handler = handle_signal;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_RESTART;
+
+	if (sigaction(SIGHUP, &sa, NULL) == -1)
+	{
+		perror("sigaction SIGHUP");
+	}
 
 	struct libinput_interface interface = {
 		.open_restricted = open_restricted,
 		.close_restricted = close_restricted,
 	};
-	// snprintf(config_path, sizeof(config_path), "%s/.config/jestapp/config.ini", getenv("HOME"));
-	snprintf(config_path, sizeof(config_path), "config.ini");
 	udev = udev_create();
 	li = libinput_udev_create_context(&interface, NULL, udev);
-
-	if (ini_parse(config_path, config_handler, &config) < 0)
-	{
-		fprintf(stderr, "Cannot read config file \n");
-	}
-	else
-	{
-		printf("sucess : readed config file \n");
-	}
+	load_config(&config);
 	if (!li)
 	{
 		fprintf(stderr, "error : libinput cannot create context \n");
@@ -59,6 +57,12 @@ int main(void)
 	printf("sucess : added a touchpad \n");
 	while (1)
 	{
+		if (reload_requested)
+		{
+			reload_requested = 0;
+			printf("sucess : config reload \n");
+			load_config(&config);
+		}
 		fds.fd = libinput_fd;
 		fds.events = POLLIN;
 		fds.revents = 0;
