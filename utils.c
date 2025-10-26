@@ -1,5 +1,36 @@
 #include "header.h"
 
+
+int open_restricted(const char *path, int flags, void *user_data)
+{
+	int fd;
+
+	fd = open(path, flags);
+	if (fd < 0)
+	{
+		perror("cannot open");
+	}
+	return (fd);
+}
+
+void close_restricted(int fd, void *user_data)
+{
+	close(fd);
+}
+
+struct udev *udev_create()
+{
+	struct udev *udev;
+	udev = udev_new();
+	if (!udev)
+	{
+		fprintf(stderr, "error : cannot create udev\n");
+		return (1);
+	}
+	return udev;
+}
+
+
 double ft_fabs(double x)
 {
 	if (x < 0)

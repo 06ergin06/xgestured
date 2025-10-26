@@ -1,27 +1,5 @@
 #include "header.h"
 
-int open_restricted(const char *path, int flags, void *user_data)
-{
-	int fd;
-
-	fd = open(path, flags);
-	if (fd < 0)
-	{
-		perror("cannot open");
-	}
-	return (fd);
-}
-
-void close_restricted(int fd, void *user_data)
-{
-	close(fd);
-}
-
-struct libinput_interface interface = {
-	.open_restricted = open_restricted,
-	.close_restricted = close_restricted,
-};
-
 int main(void)
 {
 	struct libinput *li;
@@ -31,20 +9,15 @@ int main(void)
 	int finger_count;
 	double total_dx;
 	double total_dy;
-	struct udev *udev;
 	struct s_config config = {0};
 	char config_path[256];
 	struct pollfd fds;
 	int libinput_fd;
+	struct udev *udev;
 
 	// snprintf(config_path, sizeof(config_path), "%s/.config/jestapp/config.ini", getenv("HOME"));
 	snprintf(config_path, sizeof(config_path), "config.ini");
-	udev = udev_new();
-	if (!udev)
-	{
-		fprintf(stderr, "error : cannot create udev\n");
-		return (1);
-	}
+	udev = udev_create();
 	li = libinput_udev_create_context(&interface, NULL, udev);
 
 	if (ini_parse(config_path, config_handler, &config) < 0)
