@@ -9,8 +9,10 @@ double ft_fabs(double x)
 void run_command(char *command)
 {
 	if(!command || command[0] == '\0')
+	{
 		fprintf(stderr,"command not found\n");
-
+		return ;
+	}
 	pid_t pid = fork();
 
 	if(pid == -1)
