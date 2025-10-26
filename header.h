@@ -10,14 +10,14 @@
 
 struct s_config
 {
-    char *swipe_up_3;
-    char *swipe_down_3;
-    char *swipe_left_3;
-    char *swipe_right_3;
-    char *swipe_up_4;
-    char *swipe_down_4;
-    char *swipe_left_4;
-    char *swipe_right_4;
+	char *swipe_up_3;
+	char *swipe_down_3;
+	char *swipe_left_3;
+	char *swipe_right_3;
+	char *swipe_up_4;
+	char *swipe_down_4;
+	char *swipe_left_4;
+	char *swipe_right_4;
 };
 extern volatile sig_atomic_t reload_requested;
 
