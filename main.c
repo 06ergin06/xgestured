@@ -92,7 +92,7 @@ int main(void)
 			fprintf(stderr, "error : poll");
 			continue;
 		}
-		if (fds.revents && POLLIN)
+		if (fds.revents & POLLIN)
 		{
 			libinput_dispatch(li);
 			while ((event = libinput_get_event(li)))
