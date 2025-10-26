@@ -53,7 +53,7 @@ int main(void)
 	}
 	else
 	{
-		printf("sucess : readed config file");
+		printf("sucess : readed config file \n");
 	}
 	if (!li)
 	{
@@ -89,7 +89,7 @@ int main(void)
 		int ret = poll(&fds, 1, -1);
 		if (ret < 0)
 		{
-			fprintf(stderr, "error : poll");
+			fprintf(stderr, "error : poll \n");
 			continue;
 		}
 		if (fds.revents & POLLIN)
