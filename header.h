@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <poll.h>
 #include "ini.h"
 
 struct s_config
