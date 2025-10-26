@@ -19,11 +19,6 @@ struct s_config
     char *swipe_right_4;
 };
 
-struct libinput_interface interface = {
-	.open_restricted = open_restricted,
-	.close_restricted = close_restricted,
-};
-
 int open_restricted(const char *path, int flags, void *user_data);
 void close_restricted(int fd, void *user_data);
 struct udev *udev_create();

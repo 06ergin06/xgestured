@@ -1,5 +1,6 @@
 # Compiler and flags
 CC = gcc
+CFLAGS = -Wall -Werror -Wextra -O2
 LDFLAGS = -linput -ludev
 
 # Project name

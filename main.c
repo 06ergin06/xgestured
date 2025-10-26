@@ -7,14 +7,18 @@ int main(void)
 	enum libinput_event_type type;
 	struct libinput_event_gesture *gesture_event;
 	int finger_count;
-	double total_dx;
-	double total_dy;
+	double total_dx = 0.0;
+	double total_dy = 0.0;
 	struct s_config config = {0};
 	char config_path[256];
 	struct pollfd fds;
 	int libinput_fd;
 	struct udev *udev;
 
+	struct libinput_interface interface = {
+		.open_restricted = open_restricted,
+		.close_restricted = close_restricted,
+	};
 	// snprintf(config_path, sizeof(config_path), "%s/.config/jestapp/config.ini", getenv("HOME"));
 	snprintf(config_path, sizeof(config_path), "config.ini");
 	udev = udev_create();

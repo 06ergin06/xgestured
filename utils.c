@@ -3,8 +3,8 @@
 
 int open_restricted(const char *path, int flags, void *user_data)
 {
+	(void)user_data;
 	int fd;
-
 	fd = open(path, flags);
 	if (fd < 0)
 	{
@@ -15,6 +15,7 @@ int open_restricted(const char *path, int flags, void *user_data)
 
 void close_restricted(int fd, void *user_data)
 {
+	(void)user_data;
 	close(fd);
 }
 
@@ -25,7 +26,7 @@ struct udev *udev_create()
 	if (!udev)
 	{
 		fprintf(stderr, "error : cannot create udev\n");
-		return (1);
+		exit (1);
 	}
 	return udev;
 }
