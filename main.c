@@ -2,26 +2,28 @@
 
 int main(void)
 {
-	struct libinput *li;
-	struct libinput_event *event;
-	enum libinput_event_type type;
-	struct libinput_event_gesture *gesture_event;
-	int finger_count;
-	double total_dx = 0.0;
-	double total_dy = 0.0;
-	struct s_config config = {0};
-	struct pollfd fds;
-	int libinput_fd;
-	struct udev *udev;
-	struct sigaction sa;
+	struct libinput					*li;
+	struct libinput_event			*event;
+	enum libinput_event_type		type;
+	struct libinput_event_gesture	*gesture_event;
+	int								finger_count;
+	double							total_dx;
+	double							total_dy;
+	struct pollfd					fds;
+	int								libinput_fd;
+	struct udev						*udev;
+	struct sigaction				sa;
+	int								ret;
+
+	total_dx = 0.0;
+	total_dy = 0.0;
 	sa.sa_handler = handle_signal;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_RESTART;
+	struct s_config config = {0};
 
 	if (sigaction(SIGHUP, &sa, NULL) == -1)
-	{
 		perror("sigaction SIGHUP");
-	}
 
 	struct libinput_interface interface = {
 		.open_restricted = open_restricted,
@@ -36,9 +38,7 @@ int main(void)
 		return (1);
 	}
 	else
-	{
 		printf("sucess : libinput create context \n");
-	}
 	if (libinput_udev_assign_seat(li, "seat0") != 0)
 	{
 		fprintf(stderr, "cannot assign seat 'seat0'\n");
@@ -67,7 +67,7 @@ int main(void)
 		fds.events = POLLIN;
 		fds.revents = 0;
 
-		int ret = poll(&fds, 1, -1);
+		ret = poll(&fds, 1, -1);
 		if (ret < 0)
 		{
 			fprintf(stderr, "error : poll \n");
@@ -96,44 +96,7 @@ int main(void)
 					finger_count = libinput_event_gesture_get_finger_count(gesture_event);
 					printf("finger count : %d \n", finger_count);
 					printf("total_dx: %.2f\ntotal_dy: %.2f\n", total_dx, total_dy);
-					if (ft_fabs(total_dy) > ft_fabs(total_dx))
-					{
-						if (total_dy < 0)
-						{
-							printf("fingers up \n");
-							if (finger_count == 3)
-								run_command(config.swipe_up_3);
-							else if (finger_count == 4)
-								run_command(config.swipe_up_4);
-						}
-						else
-						{
-							printf("fingers down \n");
-							if (finger_count == 3)
-								run_command(config.swipe_down_3);
-							else if (finger_count == 4)
-								run_command(config.swipe_down_4);
-						}
-					}
-					else
-					{
-						if (total_dx < 0)
-						{
-							printf("fingers left \n");
-							if (finger_count == 3)
-								run_command(config.swipe_left_3);
-							else if (finger_count == 4)
-								run_command(config.swipe_left_4);
-						}
-						else
-						{
-							printf("fingers right \n");
-							if (finger_count == 3)
-								run_command(config.swipe_right_3);
-							else if (finger_count == 4)
-								run_command(config.swipe_right_4);
-						}
-					}
+					gesture_command_run(total_dx, total_dy, finger_count, config);
 					printf("end a gesture \n");
 					break;
 				case LIBINPUT_EVENT_GESTURE_PINCH_BEGIN:

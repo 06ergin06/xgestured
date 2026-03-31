@@ -1,10 +1,9 @@
 # Compiler and flags
-CC = gcc
+CC = cc
 CFLAGS = -Wall -Werror -Wextra -O2
 LDFLAGS = -linput -ludev
 
-# Project name
-NAME = jestapp
+NAME = x11_gestures
 
 # Source files
 SRCS = utils.c main.c ini.c
@@ -36,11 +35,6 @@ fclean: clean
 
 # Rebuild everything
 re: fclean all
-
-# Install dependencies (Ubuntu/Debian)
-install-deps:
-	sudo apt-get update
-	sudo apt-get install wmctrl xdotool libinput-tools libinput-dev libudev-dev
 
 # Run with sudo (required for input device access)
 run: $(NAME)
