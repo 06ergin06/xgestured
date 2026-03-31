@@ -2,7 +2,7 @@
 
 volatile sig_atomic_t	reload_requested = 0;
 
-int open_restricted(const char *path, int flags, void *user_data)
+int	open_restricted(const char *path, int flags, void *user_data)
 {
 	(void)user_data;
 	int fd;
@@ -14,13 +14,13 @@ int open_restricted(const char *path, int flags, void *user_data)
 	return (fd);
 }
 
-void close_restricted(int fd, void *user_data)
+void	close_restricted(int fd, void *user_data)
 {
 	(void)user_data;
 	close(fd);
 }
 
-struct udev *udev_create()
+struct udev	*udev_create()
 {
 	struct udev *udev;
 	udev = udev_new();
@@ -32,7 +32,7 @@ struct udev *udev_create()
 	return udev;
 }
 
-int load_config(struct s_config *config)
+int	load_config(struct s_config *config)
 {
 	char config_path[256];
 	free(config->swipe_up_3);
@@ -67,7 +67,7 @@ int load_config(struct s_config *config)
 	}
 }
 
-void handle_signal(int signum)
+void	handle_signal(int signum)
 {
 	if (signum == SIGHUP)
 	{
@@ -75,14 +75,14 @@ void handle_signal(int signum)
 	}
 }
 
-double ft_fabs(double x)
+double	ft_fabs(double x)
 {
 	if (x < 0)
 		x = -x;
 	return (x);
 }
 
-void run_command(char *command)
+void	run_command(char *command)
 {
 	if (!command || command[0] == '\0')
 	{
@@ -104,7 +104,7 @@ void run_command(char *command)
 	}
 }
 
-int config_handler(void *user_data, const char *section, const char *name, const char *value)
+int	config_handler(void *user_data, const char *section, const char *name, const char *value)
 {
 	struct s_config *config = (struct s_config *)user_data;
 
