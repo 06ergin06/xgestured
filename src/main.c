@@ -31,19 +31,22 @@ int main(void)
 	if (signal(SIGCHLD, SIG_IGN) == SIG_ERR)
 		perror("signal SIGCHLD");
 
+	signal(SIGINT, graceful_shutdown);
+	signal(SIGTERM, graceful_shutdown);
+
 	udev = udev_create();
 	li = libinput_udev_create_context(&interface, NULL, udev);
 	load_config(&config);
 	if (!li)
 	{
-		perror("error : libinput cannot create context \n");
+		perror("error : libinput cannot create context");
 		return (1);
 	}
 	else
 		printf("sucess : libinput create context \n");
 	if (libinput_udev_assign_seat(li, "seat0") != 0)
 	{
-		perror("cannot assign seat 'seat0'\n");
+		perror("cannot assign seat 'seat0'");
 		libinput_unref(li);
 		udev_unref(udev);
 		return (1);
@@ -63,7 +66,7 @@ int main(void)
 	inotify_watch = inotify_add_watch(inotify_fd, CONFIG_PATH, IN_MODIFY);
 	if (inotify_watch < 0)
 		perror("error: inotify add watch");
-	while (1)
+	while (keep_running)
 	{
 		fds[0].fd = libinput_fd;
 		fds[0].events = POLLIN;
@@ -76,7 +79,7 @@ int main(void)
 		ret = poll(fds, 2, -1);
 		if (ret < 0)
 		{
-			perror("error : poll \n");
+			perror("error : poll");
 			continue;
 		}
 		if (fds[0].revents & POLLIN)
@@ -105,11 +108,6 @@ int main(void)
 					gesture_command_run(total_dx, total_dy, finger_count, config);
 					printf("end a gesture \n");
 					break;
-				case LIBINPUT_EVENT_GESTURE_PINCH_BEGIN:
-					printf("start a pinch \n");
-					break;
-				case LIBINPUT_EVENT_GESTURE_PINCH_END:
-					printf("end a pinch \n");
 				default:
 					break;
 				}

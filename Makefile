@@ -27,6 +27,10 @@ fclean: clean
 re: fclean all
 
 install: $(NAME)
+	@if [ "$$(id -u)" -ne 0 ]; then \
+		echo "Error: make install must be run as root (sudo make install)"; \
+		exit 1; \
+	fi
 	@echo "Installing service..."
 	install -Dm755 $(NAME) /usr/local/bin/$(NAME)
 	install -Dm644 $(NAME).service /etc/systemd/system/$(NAME).service

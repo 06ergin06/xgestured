@@ -1,5 +1,7 @@
 #include "../includes/header.h"
 
+volatile sig_atomic_t keep_running = 1;
+
 int	open_restricted(const char *path, int flags, void *user_data)
 {
 	(void)user_data;
@@ -18,13 +20,19 @@ void	close_restricted(int fd, void *user_data)
 	close(fd);
 }
 
+void graceful_shutdown(int signum)
+{
+	(void)signum;
+	keep_running = 0;
+}
+
 struct udev	*udev_create()
 {
 	struct udev *udev;
 	udev = udev_new();
 	if (!udev)
 	{
-		perror("error : cannot create udev\n");
+		perror("error : cannot create udev");
 		exit(1);
 	}
 	return udev;
@@ -55,7 +63,7 @@ int	load_config(struct s_config *config)
 
 	if (ini_parse(config_path, config_handler, config) < 0)
 	{
-		perror("Cannot read config file \n");
+		perror("Cannot read config file");
 		exit (1);
 	}
 	else
@@ -76,22 +84,37 @@ void	run_command(char *command)
 {
 	if (!command || command[0] == '\0')
 	{
-		perror("command not found\n");
+		perror("command not found");
 		return ;
 	}
 	pid_t pid = fork();
 
 	if (pid == -1)
 	{
-		perror("cannot fork\n");
+		perror("cannot fork");
 		return ;
 	}
 	if (pid == 0)
 	{
 		execl("/bin/sh", "sh", "-c", command, (char *)NULL);
-		perror("cannot run command\n");
+		perror("cannot run command");
 		exit(1);
 	}
+}
+
+static char *safe_strdup(const char *s)
+{
+	char *d;
+
+	if (!s)
+		return (NULL);
+	d = strdup(s);
+	if (!d)
+	{
+		perror("Fatal error: Out of memory");
+		exit(EXIT_FAILURE);
+	}
+	return (d);
 }
 
 int	config_handler(void *user_data, const char *section, const char *name, const char *value)
@@ -101,24 +124,24 @@ int	config_handler(void *user_data, const char *section, const char *name, const
 	if (strcmp(section, "gestures_3") == 0)
 	{
 		if (strcmp(name, "swipe_up_3") == 0)
-			config->swipe_up_3 = strdup(value);
+			config->swipe_up_3 = safe_strdup(value);
 		else if (strcmp(name, "swipe_down_3") == 0)
-			config->swipe_down_3 = strdup(value);
+			config->swipe_down_3 = safe_strdup(value);
 		else if (strcmp(name, "swipe_left_3") == 0)
-			config->swipe_left_3 = strdup(value);
+			config->swipe_left_3 = safe_strdup(value);
 		else if (strcmp(name, "swipe_right_3") == 0)
-			config->swipe_right_3 = strdup(value);
+			config->swipe_right_3 = safe_strdup(value);
 	}
 	else if (strcmp(section, "gestures_4") == 0)
 	{
 		if (strcmp(name, "swipe_up_4") == 0)
-			config->swipe_up_4 = strdup(value);
+			config->swipe_up_4 = safe_strdup(value);
 		else if (strcmp(name, "swipe_down_4") == 0)
-			config->swipe_down_4 = strdup(value);
+			config->swipe_down_4 = safe_strdup(value);
 		else if (strcmp(name, "swipe_left_4") == 0)
-			config->swipe_left_4 = strdup(value);
+			config->swipe_left_4 = safe_strdup(value);
 		else if (strcmp(name, "swipe_right_4") == 0)
-			config->swipe_right_4 = strdup(value);
+			config->swipe_right_4 = safe_strdup(value);
 	}
 	return (1);
 }

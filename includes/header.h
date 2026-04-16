@@ -10,6 +10,8 @@
 
 #define CONFIG_PATH "/etc/xgestured/config.ini"
 
+extern volatile sig_atomic_t	keep_running;
+
 struct s_config
 {
 	char	*swipe_up_3;
@@ -31,3 +33,4 @@ void		run_command(char *command);
 int			config_handler(void *user_data, const char *section, const char *name, const char *value);
 double		ft_fabs(double x);
 void		gesture_command_run(double total_dx, double total_dy, int finger_count, struct s_config config);
+void		graceful_shutdown(int signum);
