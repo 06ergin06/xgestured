@@ -18,6 +18,7 @@ struct s_config
 	char	*swipe_left_4;
 	char	*swipe_right_4;
 };
+
 extern volatile sig_atomic_t	reload_requested;
 
 int			open_restricted(const char *path, int flags, void *user_data);

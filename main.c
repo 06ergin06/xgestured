@@ -1,5 +1,10 @@
 #include "header.h"
 
+static const struct libinput_interface interface = {
+		.open_restricted = open_restricted,
+		.close_restricted = close_restricted,
+};
+
 int main(void)
 {
 	struct libinput					*li;
@@ -24,24 +29,23 @@ int main(void)
 
 	if (sigaction(SIGHUP, &sa, NULL) == -1)
 		perror("sigaction SIGHUP");
+	// Zombie process
+	if (signal(SIGCHLD, SIG_IGN) == SIG_ERR)
+		perror("signal SIGCHLD");
 
-	struct libinput_interface interface = {
-		.open_restricted = open_restricted,
-		.close_restricted = close_restricted,
-	};
 	udev = udev_create();
 	li = libinput_udev_create_context(&interface, NULL, udev);
 	load_config(&config);
 	if (!li)
 	{
-		fprintf(stderr, "error : libinput cannot create context \n");
+		perror("error : libinput cannot create context \n");
 		return (1);
 	}
 	else
 		printf("sucess : libinput create context \n");
 	if (libinput_udev_assign_seat(li, "seat0") != 0)
 	{
-		fprintf(stderr, "cannot assign seat 'seat0'\n");
+		perror("cannot assign seat 'seat0'\n");
 		libinput_unref(li);
 		udev_unref(udev);
 		return (1);
@@ -49,7 +53,7 @@ int main(void)
 	libinput_fd = libinput_get_fd(li);
 	if (libinput_fd < 0)
 	{
-		fprintf(stderr, "error : libinputgetfd");
+		perror("error : libinputgetfd");
 		libinput_unref(li);
 		udev_unref(udev);
 		return 1;
