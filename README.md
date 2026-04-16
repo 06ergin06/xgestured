@@ -1,16 +1,14 @@
 # xGestured
 
-A lightweight, minimal, and lightning-fast touchpad gesture daemon for Linux.
-
-`xgestured` reads raw touchpad input events directly from the hardware and executes user-defined shell commands based on multi-finger swipes. It is designed to be extremely resource-efficient, running silently in the background as a native systemd user service.
+A lightweight, minimal, and lightning-fast touchpad gesture daemon specifically built for **X11** desktop environments.
 
 ## ✨ Features
 
+* **Built for X11:** Perfect for Window Managers (i3, bspwm, Awesome) and traditional Desktop Environments (KDE X11, XFCE, Mate) where native gesture support is missing.
 * **Pure C & Minimal Overhead:** Written strictly in C with zero bloated dependencies.
 * **Zero Zombie Processes:** Gracefully handles child process execution natively.
 * **Instant Config Reloading:** Uses `inotify` to automatically detect changes to the configuration file. No need to restart the daemon.
-* **Desktop Environment Agnostic:** Works perfectly on X11 and can trigger commands on any Window Manager or DE (KDE, GNOME, Window Maker, etc.) because it runs within your user session.
-* **Automated Privilege Setup:** Automatically adds your user to the `input` group during installation for secure, passwordless hardware access.
+* **Desktop Environment Agnostic:** Works perfectly on X11 and can trigger commands on any Window Manager or DE (KDE, GNOME etc.) because it runs within your user session.
 
 ## 📦 Dependencies
 
