@@ -43,7 +43,7 @@ int main(void)
 		return (1);
 	}
 	else
-		printf("sucess : libinput create context \n");
+		printf("success : libinput create context \n");
 	if (libinput_udev_assign_seat(li, "seat0") != 0)
 	{
 		perror("cannot assign seat 'seat0'");
@@ -59,7 +59,7 @@ int main(void)
 		udev_unref(udev);
 		return 1;
 	}
-	printf("sucess : added a touchpad \n");
+	printf("success : added a touchpad \n");
 	inotify_fd = inotify_init();
 	if (inotify_fd < 0)
 		perror("error: inotify init");
@@ -105,7 +105,7 @@ int main(void)
 					finger_count = libinput_event_gesture_get_finger_count(gesture_event);
 					printf("finger count : %d \n", finger_count);
 					printf("total_dx: %.2f\ntotal_dy: %.2f\n", total_dx, total_dy);
-					gesture_command_run(total_dx, total_dy, finger_count, config);
+					gesture_command_run(total_dx, total_dy, finger_count, &config);
 					printf("end a gesture \n");
 					break;
 				default:
@@ -117,7 +117,7 @@ int main(void)
 		if (fds[1].revents & POLLIN)
 		{
 			read(inotify_fd, buffer, sizeof(buffer));
-			printf("sucess : config file changed natively, reloading...\n");
+			printf("success : config file changed natively, reloading...\n");
 			load_config(&config);
 		}
 	}
@@ -131,5 +131,9 @@ int main(void)
 	free(config.swipe_left_4);
 	libinput_unref(li);
 	udev_unref(udev);
+	if (inotify_watch >= 0)
+		inotify_rm_watch(inotify_fd, inotify_watch);
+	if (inotify_fd >= 0)
+		close(inotify_fd);
 	return (0);
 }

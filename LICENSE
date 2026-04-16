@@ -672,3 +672,7 @@ may consider it more useful to permit linking proprietary applications with
 the library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.  But first, please read
 <https://www.gnu.org/licenses/why-not-lgpl.html>.
+
+  This project is licensed under the GPLv3 License. The INI parser
+(ini.c, ini.h) included in this project is developed by Ben Hoyt and
+licensed under the BSD 3-Clause License

@@ -32,5 +32,5 @@ int			load_config(struct s_config *config);
 void		run_command(char *command);
 int			config_handler(void *user_data, const char *section, const char *name, const char *value);
 double		ft_fabs(double x);
-void		gesture_command_run(double total_dx, double total_dy, int finger_count, struct s_config config);
+void		gesture_command_run(double total_dx, double total_dy, int finger_count, const struct s_config *config);
 void		graceful_shutdown(int signum);

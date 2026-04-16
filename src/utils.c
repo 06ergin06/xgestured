@@ -68,7 +68,7 @@ int	load_config(struct s_config *config)
 	}
 	else
 	{
-		printf("sucess : readed config file \n");
+		printf("success : readed config file \n");
 		return 0;
 	}
 }
@@ -146,7 +146,7 @@ int	config_handler(void *user_data, const char *section, const char *name, const
 	return (1);
 }
 
-void	gesture_command_run(double total_dx, double total_dy, int finger_count, struct s_config config)
+void	gesture_command_run(double total_dx, double total_dy, int finger_count, const struct s_config *config)
 {
 	if (ft_fabs(total_dy) > ft_fabs(total_dx))
 	{
@@ -154,17 +154,17 @@ void	gesture_command_run(double total_dx, double total_dy, int finger_count, str
 		{
 			printf("fingers up \n");
 			if (finger_count == 3)
-				run_command(config.swipe_up_3);
+				run_command(config->swipe_up_3);
 			else if (finger_count == 4)
-				run_command(config.swipe_up_4);
+				run_command(config->swipe_up_4);
 		}
 		else
 		{
 			printf("fingers down \n");
 			if (finger_count == 3)
-				run_command(config.swipe_down_3);
+				run_command(config->swipe_down_3);
 			else if (finger_count == 4)
-				run_command(config.swipe_down_4);
+				run_command(config->swipe_down_4);
 		}
 	}
 	else
@@ -173,17 +173,17 @@ void	gesture_command_run(double total_dx, double total_dy, int finger_count, str
 		{
 			printf("fingers left \n");
 			if (finger_count == 3)
-				run_command(config.swipe_left_3);
+				run_command(config->swipe_left_3);
 			else if (finger_count == 4)
-				run_command(config.swipe_left_4);
+				run_command(config->swipe_left_4);
 		}
 		else
 		{
 			printf("fingers right \n");
 			if (finger_count == 3)
-				run_command(config.swipe_right_3);
+				run_command(config->swipe_right_3);
 			else if (finger_count == 4)
-				run_command(config.swipe_right_4);
+				run_command(config->swipe_right_4);
 		}
 	}
 }
