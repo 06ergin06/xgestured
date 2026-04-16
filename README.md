@@ -19,28 +19,28 @@ A lightweight, minimal, and lightning-fast touchpad gesture daemon for Linux.
 * `libudev`
 
 **For Arch Linux / CachyOS:**
-\`\`\`bash
+```bash
 sudo pacman -S libinput systemd
-\`\`\`
+```
 
 **For Debian / Ubuntu:**
-\`\`\`bash
+```bash
 sudo apt install libinput-dev libudev-dev
-\`\`\`
+```
 
 ## 🚀 Installation
 
 1. Clone the repository:
-\`\`\`bash
+```bash
 git clone https://github.com/06ergin06/xgestured.git
 cd xgestured
-\`\`\`
+```
 
 2. Build and install the daemon (**DO NOT run with sudo**):
-\`\`\`bash
+```bash
 make
 make install
-\`\`\`
+```
 *(The script will ask for your sudo password once to place the config file in `/etc/` and add you to the `input` group.)*
 
 3. **CRITICAL STEP:** You **MUST** log out and log back in (or reboot your computer) for the hardware permissions to take effect. The daemon will automatically start working after you log back in.
@@ -56,9 +56,9 @@ The configuration file is located at `/etc/xgestured/config.ini`. You can define
 ## 🗑️ Uninstallation
 
 To completely remove `xgestured` and its configuration from your system:
-\`\`\`bash
+```bash
 make uninstall
-\`\`\`
+```
 
 ## 📜 License
 
