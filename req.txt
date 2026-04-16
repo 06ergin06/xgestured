@@ -1,1 +1,0 @@
-sudo apt install wmctrl xdotool libinput-tools libinput-dev libudev-dev

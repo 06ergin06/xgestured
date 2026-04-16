@@ -51,7 +51,7 @@ int	load_config(struct s_config *config)
 	free(config->swipe_right_4);
 	config->swipe_right_4 = NULL;
 
-	snprintf(config_path, sizeof(config_path), "config.ini");
+	snprintf(config_path, sizeof(config_path), CONFIG_PATH);
 
 	if (ini_parse(config_path, config_handler, config) < 0)
 	{

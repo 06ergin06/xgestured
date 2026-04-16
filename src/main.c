@@ -60,7 +60,7 @@ int main(void)
 	inotify_fd = inotify_init();
 	if (inotify_fd < 0)
 		perror("error: inotify init");
-	inotify_watch = inotify_add_watch(inotify_fd, "config.ini", IN_MODIFY);
+	inotify_watch = inotify_add_watch(inotify_fd, CONFIG_PATH, IN_MODIFY);
 	if (inotify_watch < 0)
 		perror("error: inotify add watch");
 	while (1)

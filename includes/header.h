@@ -8,6 +8,8 @@
 #include "ini.h"
 #include <sys/inotify.h>
 
+#define CONFIG_PATH "/etc/xgestured/config.ini"
+
 struct s_config
 {
 	char	*swipe_up_3;
