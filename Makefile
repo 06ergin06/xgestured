@@ -10,6 +10,10 @@ OBJS = $(SRCS:.c=.o)
 
 HEADERS = includes/header.h includes/ini.h
 
+BIN_DIR = $(HOME)/.local/bin
+SERV_DIR = $(HOME)/.config/systemd/user
+CONF_DIR = /etc/$(NAME)
+
 all: $(NAME)
 
 $(NAME): $(OBJS)
@@ -27,23 +31,26 @@ fclean: clean
 re: fclean all
 
 install: $(NAME)
-	@if [ "$$(id -u)" -ne 0 ]; then \
-		echo "Error: make install must be run as root (sudo make install)"; \
-		exit 1; \
-	fi
 	@echo "Installing service..."
-	install -Dm755 $(NAME) /usr/local/bin/$(NAME)
-	install -Dm644 $(NAME).service /etc/systemd/system/$(NAME).service
-	install -Dm644 config.ini /etc/$(NAME)/config.ini
-	systemctl enable --now $(NAME)
-	@echo "Success."
+	mkdir -p $(BIN_DIR)
+	mkdir -p $(SERV_DIR)
+	install -m 755 $(NAME) $(BIN_DIR)/$(NAME)
+	install -m 644 $(NAME).service $(SERV_DIR)/$(NAME).service
+	@if [ "$$(id -u)" -eq 0 ]; then \
+		mkdir -p $(CONF_DIR) && install -m 644 config.ini $(CONF_DIR)/config.ini; \
+	else \
+		sudo mkdir -p $(CONF_DIR) && sudo install -m 644 config.ini $(CONF_DIR)/config.ini; \
+	fi
+	systemctl --user daemon-reload
+	systemctl --user enable --now $(NAME)
+	@echo "Success"
 
 uninstall:
-	@echo "Uninstalling..."
-	systemctl disable --now $(NAME) || true
-	rm -f /usr/local/bin/$(NAME)
-	rm -f /etc/systemd/system/$(NAME).service
-	rm -rf /etc/$(NAME)
+	@echo "Uninstalling service..."
+	systemctl --user disable --now $(NAME) || true
+	rm -f $(BIN_DIR)/$(NAME)
+	rm -f $(SERV_DIR)/$(NAME).service
+	rm -f $(CONF_DIR)/config.ini
 	@echo "Success."
 
 .PHONY: all clean fclean re install uninstall

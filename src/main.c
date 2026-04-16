@@ -63,7 +63,7 @@ int main(void)
 	inotify_fd = inotify_init();
 	if (inotify_fd < 0)
 		perror("error: inotify init");
-	inotify_watch = inotify_add_watch(inotify_fd, CONFIG_PATH, IN_MODIFY);
+	inotify_watch = inotify_add_watch(inotify_fd, CONFIG_PATH, IN_CLOSE_WRITE);
 	if (inotify_watch < 0)
 		perror("error: inotify add watch");
 	while (keep_running)
@@ -116,9 +116,11 @@ int main(void)
 		}
 		if (fds[1].revents & POLLIN)
 		{
-			read(inotify_fd, buffer, sizeof(buffer));
-			printf("success : config file changed natively, reloading...\n");
-			load_config(&config);
+			if(read(inotify_fd, buffer, sizeof(buffer)) > 0)
+			{
+				printf("success : config file changed natively, reloading...\n");
+				load_config(&config);
+			}
 		}
 	}
 	free(config.swipe_up_3);

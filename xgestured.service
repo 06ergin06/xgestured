@@ -1,15 +1,14 @@
 [Unit]
 Description=xGestured - Lightweight Touchpad Gesture Daemon
-After=multi-user.target input-daemon.service
+After=graphical-session.target
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/xgestured
-WorkingDirectory=/etc/xgestured
+ExecStart=%h/.local/bin/xgestured
 Restart=on-failure
 RestartSec=3
 
 Environment="DISPLAY=:0"
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=graphical-session.target
