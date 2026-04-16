@@ -32,7 +32,7 @@ re: fclean all
 
 install: $(NAME)
 	@if [ "$$(id -u)" -eq 0 ]; then \
-		echo "Error: You should 'make install' without 'sudo'; \
+		echo "Error: You should 'make install' without 'sudo'"; \
 		exit 1; \
 	fi
 	@echo "Installing service..."
@@ -45,12 +45,9 @@ install: $(NAME)
 	sudo usermod -aG input $$USER
 	systemctl --user daemon-reload
 	systemctl --user enable --now $(NAME)
-	@echo ""
-	@echo "=================================================================="
 	@echo "SUCCESS!"
 	@echo "⚠️ WARNING"
 	@echo "PLEASE REBOOT OR LOG OUT SESSION."
-	@echo "=================================================================="
 
 uninstall:
 	@echo "Uninstalling service..."
