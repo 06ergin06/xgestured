@@ -31,26 +31,33 @@ fclean: clean
 re: fclean all
 
 install: $(NAME)
+	@if [ "$$(id -u)" -eq 0 ]; then \
+		echo "Error: You should 'make install' without 'sudo'; \
+		exit 1; \
+	fi
 	@echo "Installing service..."
 	mkdir -p $(BIN_DIR)
 	mkdir -p $(SERV_DIR)
 	install -m 755 $(NAME) $(BIN_DIR)/$(NAME)
 	install -m 644 $(NAME).service $(SERV_DIR)/$(NAME).service
-	@if [ "$$(id -u)" -eq 0 ]; then \
-		mkdir -p $(CONF_DIR) && install -m 644 config.ini $(CONF_DIR)/config.ini; \
-	else \
-		sudo mkdir -p $(CONF_DIR) && sudo install -m 644 config.ini $(CONF_DIR)/config.ini; \
-	fi
+	sudo mkdir -p $(CONF_DIR)
+	sudo install -m 644 config.ini $(CONF_DIR)/config.ini
+	sudo usermod -aG input $$USER
 	systemctl --user daemon-reload
 	systemctl --user enable --now $(NAME)
-	@echo "Success"
+	@echo ""
+	@echo "=================================================================="
+	@echo "SUCCESS!"
+	@echo "⚠️ WARNING"
+	@echo "PLEASE REBOOT OR LOG OUT SESSION."
+	@echo "=================================================================="
 
 uninstall:
 	@echo "Uninstalling service..."
 	systemctl --user disable --now $(NAME) || true
 	rm -f $(BIN_DIR)/$(NAME)
 	rm -f $(SERV_DIR)/$(NAME).service
-	rm -f $(CONF_DIR)/config.ini
-	@echo "Success."
+	sudo rm -rf $(CONF_DIR)
+	@echo "Success"
 
 .PHONY: all clean fclean re install uninstall
