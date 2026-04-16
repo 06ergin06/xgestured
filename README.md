@@ -8,7 +8,6 @@ A lightweight, minimal, and lightning-fast touchpad gesture daemon specifically 
 * **Pure C & Minimal Overhead:** Written strictly in C with zero bloated dependencies.
 * **Zero Zombie Processes:** Gracefully handles child process execution natively.
 * **Instant Config Reloading:** Uses `inotify` to automatically detect changes to the configuration file. No need to restart the daemon.
-* **Desktop Environment Agnostic:** Works perfectly on X11 and can trigger commands on any Window Manager or DE (KDE, GNOME etc.) because it runs within your user session.
 
 ## 📦 Dependencies
 
