@@ -18,7 +18,7 @@ A lightweight, minimal, and lightning-fast touchpad gesture daemon specifically 
 
 **For Arch Linux / CachyOS:**
 ```bash
-sudo pacman -S libinput systemd
+sudo pacman -S libinput
 ```
 
 **For Debian / Ubuntu:**
@@ -26,6 +26,10 @@ sudo pacman -S libinput systemd
 sudo apt install libinput-dev libudev-dev
 ```
 
+**For Fedora:**
+```bash
+sudo dnf install libinput-devel systemd-devel
+```
 ## 🚀 Installation
 
 1. Clone the repository:
