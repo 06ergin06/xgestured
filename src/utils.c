@@ -1,6 +1,4 @@
-#include "header.h"
-
-volatile sig_atomic_t	reload_requested = 0;
+#include "../includes/header.h"
 
 int	open_restricted(const char *path, int flags, void *user_data)
 {
@@ -26,7 +24,7 @@ struct udev	*udev_create()
 	udev = udev_new();
 	if (!udev)
 	{
-		fprintf(stderr, "error : cannot create udev\n");
+		perror("error : cannot create udev\n");
 		exit(1);
 	}
 	return udev;
@@ -35,6 +33,7 @@ struct udev	*udev_create()
 int	load_config(struct s_config *config)
 {
 	char config_path[256];
+
 	free(config->swipe_up_3);
 	config->swipe_up_3 = NULL;
 	free(config->swipe_down_3);
@@ -56,21 +55,13 @@ int	load_config(struct s_config *config)
 
 	if (ini_parse(config_path, config_handler, config) < 0)
 	{
-		fprintf(stderr, "Cannot read config file \n");
+		perror("Cannot read config file \n");
 		exit (1);
 	}
 	else
 	{
 		printf("sucess : readed config file \n");
 		return 0;
-	}
-}
-
-void	handle_signal(int signum)
-{
-	if (signum == SIGHUP)
-	{
-		reload_requested = 1;
 	}
 }
 
@@ -85,20 +76,20 @@ void	run_command(char *command)
 {
 	if (!command || command[0] == '\0')
 	{
-		fprintf(stderr, "command not found\n");
+		perror("command not found\n");
 		return ;
 	}
 	pid_t pid = fork();
 
 	if (pid == -1)
 	{
-		fprintf(stderr, "cannot fork\n");
+		perror("cannot fork\n");
 		return ;
 	}
 	if (pid == 0)
 	{
 		execl("/bin/sh", "sh", "-c", command, (char *)NULL);
-		fprintf(stderr, "cannot run command\n");
+		perror("cannot run command\n");
 		exit(1);
 	}
 }

@@ -1,4 +1,4 @@
-#include "header.h"
+#include "../includes/header.h"
 
 static const struct libinput_interface interface = {
 		.open_restricted = open_restricted,
@@ -14,21 +14,19 @@ int main(void)
 	int								finger_count;
 	double							total_dx;
 	double							total_dy;
-	struct pollfd					fds;
+	struct pollfd					fds[2];
 	int								libinput_fd;
 	struct udev						*udev;
-	struct sigaction				sa;
 	int								ret;
+	int								inotify_fd;
+	int								inotify_watch;
+	char							buffer[1024];
 
 	total_dx = 0.0;
 	total_dy = 0.0;
-	sa.sa_handler = handle_signal;
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = SA_RESTART;
+
 	struct s_config config = {0};
 
-	if (sigaction(SIGHUP, &sa, NULL) == -1)
-		perror("sigaction SIGHUP");
 	// Zombie process
 	if (signal(SIGCHLD, SIG_IGN) == SIG_ERR)
 		perror("signal SIGCHLD");
@@ -59,25 +57,29 @@ int main(void)
 		return 1;
 	}
 	printf("sucess : added a touchpad \n");
+	inotify_fd = inotify_init();
+	if (inotify_fd < 0)
+		perror("error: inotify init");
+	inotify_watch = inotify_add_watch(inotify_fd, "config.ini", IN_MODIFY);
+	if (inotify_watch < 0)
+		perror("error: inotify add watch");
 	while (1)
 	{
-		if (reload_requested)
-		{
-			reload_requested = 0;
-			printf("sucess : config reload \n");
-			load_config(&config);
-		}
-		fds.fd = libinput_fd;
-		fds.events = POLLIN;
-		fds.revents = 0;
+		fds[0].fd = libinput_fd;
+		fds[0].events = POLLIN;
+		fds[0].revents = 0;
 
-		ret = poll(&fds, 1, -1);
+		fds[1].fd = inotify_fd;
+		fds[1].events = POLLIN;
+		fds[1].revents = 0;
+
+		ret = poll(fds, 2, -1);
 		if (ret < 0)
 		{
-			fprintf(stderr, "error : poll \n");
+			perror("error : poll \n");
 			continue;
 		}
-		if (fds.revents & POLLIN)
+		if (fds[0].revents & POLLIN)
 		{
 			libinput_dispatch(li);
 			while ((event = libinput_get_event(li)))
@@ -113,6 +115,12 @@ int main(void)
 				}
 				libinput_event_destroy(event);
 			}
+		}
+		if (fds[1].revents & POLLIN)
+		{
+			read(inotify_fd, buffer, sizeof(buffer));
+			printf("sucess : config file changed natively, reloading...\n");
+			load_config(&config);
 		}
 	}
 	free(config.swipe_up_3);

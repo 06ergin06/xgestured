@@ -1,14 +1,14 @@
-CC = cc
-CFLAGS = -Wall -Werror -Wextra -O2
+CC = gcc
+CFLAGS = -Wall -Werror -Wextra -I./includes
 LDFLAGS = -linput -ludev
 
 NAME = xgestured
 
-SRCS = utils.c main.c ini.c
+SRCS = src/utils.c src/main.c src/ini.c
 
 OBJS = $(SRCS:.c=.o)
 
-HEADERS = header.h ini.h
+HEADERS = includes/header.h includes/ini.h
 
 all: $(NAME)
 
@@ -26,7 +26,18 @@ fclean: clean
 
 re: fclean all
 
-run: $(NAME)
-	sudo ./$(NAME)
+install: $(NAME)
+	@echo "Installing service..."
+	install -Dm755 $(NAME) /usr/local/bin/$(NAME)
+	install -Dm644 $(NAME).service /etc/systemd/system/$(NAME).service
+	@echo "Success."
+	systemctl enable --now $(NAME)
 
-.PHONY: all clean fclean re install-deps run
+uninstall:
+	@echo "Uninstalling..."
+	systemctl disable --now $(NAME) || true
+	rm -f /usr/local/bin/$(NAME)
+	rm -f /etc/systemd/system/$(NAME).service
+	@echo "Success."
+
+.PHONY: all clean fclean re install uninstall
