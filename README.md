@@ -1,6 +1,6 @@
 # xGestured
 
-A lightweight, minimal, and lightning-fast touchpad gesture daemon specifically built for **X11** desktop environments.
+A lightweight, minimal, and lightning-fast touchpad gesture daemon specifically built for **X11** desktop environments (it works on Wayland too).
 
 ## ✨ Features
 
@@ -30,7 +30,18 @@ sudo apt install libinput-dev libudev-dev
 sudo dnf install libinput-devel systemd-devel
 ```
 ## 🚀 Installation
+### Method 1 : AUR
+```bash
+paru -S xgestured-git
+# or 
+yay -S xgestured-git
+```
+```bash
+sudo usermod -aG input $USER
+```
+**CRITICAL STEP:** You **MUST** log out and log back in (or reboot your computer).
 
+### Method 2 : Manual
 1. Clone the repository:
 ```bash
 git clone https://github.com/06ergin06/xgestured.git
@@ -44,7 +55,7 @@ make install
 ```
 *(The script will ask for your sudo password once to place the config file in `/etc/` and add you to the `input` group.)*
 
-3. **CRITICAL STEP:** You **MUST** log out and log back in (or reboot your computer) for the hardware permissions to take effect. The daemon will automatically start working after you log back in.
+**CRITICAL STEP:** You **MUST** log out and log back in (or reboot your computer).
 
 ## ⚙️ Configuration
 
