@@ -2,6 +2,8 @@
 
 A lightweight, minimal, and lightning-fast touchpad gesture daemon specifically built for **X11** desktop environments (it works on Wayland too).
 
+https://github.com/user-attachments/assets/bd9413c5-64d5-4786-889c-4b78688ab81a
+
 ## ✨ Features
 
 * **Built for X11:** Perfect for Window Managers (i3, bspwm, Awesome) and traditional Desktop Environments (KDE X11, XFCE, Mate) where native gesture support is missing.
